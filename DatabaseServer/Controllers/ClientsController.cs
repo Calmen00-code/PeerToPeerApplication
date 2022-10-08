@@ -13,9 +13,9 @@ using DatabaseServer.Models;
 namespace DatabaseServer.Controllers
 {
     [RoutePrefix("api/clients")]
-    public class ClientsController : ApiController
+    public class Clients1Controller : ApiController
     {
-        private PeerToPeerDatabaseEntities db = new PeerToPeerDatabaseEntities();
+        private PeerDatabaseEntities2 db = new PeerDatabaseEntities2();
 
         [Route("")]
         public IQueryable<Client> GetClients()

@@ -4,8 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="29b9c8b4e4834293a12e7b4b7bc44a4b" Name="Diagram1">
-        <EntityTypeShape EntityType="PeerToPeerDatabaseModel.Client" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="a0bf5a0d9d8846d5ab4bfc3382b10be0" Name="Diagram1">
+        <EntityTypeShape EntityType="PeerDatabaseModel.Client" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

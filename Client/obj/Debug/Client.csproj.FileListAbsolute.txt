@@ -57,3 +57,5 @@ C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Deb
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\obj\Debug\UserWindow.g.cs
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\obj\Debug\UserWindow.baml
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\APIClasses.dll
+C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\APIClasses.pdb

@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="PeerToPeerDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="PeerDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="Client">
     <Key>
       <PropertyRef Name="IP_Address" />
     </Key>
     <Property Name="IP_Address" Type="varchar" MaxLength="40" Nullable="false" />
-    <Property Name="Port" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Port" Type="varchar" MaxLength="40" Nullable="false" />
+    <Property Name="Idle" Type="bit" />
   </EntityType>
-  <EntityContainer Name="PeerToPeerDatabaseModelStoreContainer">
+  <EntityContainer Name="PeerDatabaseModelStoreContainer">
     <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

@@ -190,9 +190,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\PeerToPeerDatabase.mdf" />
-    <Content Include="App_Data\PeerToPeerDatabase_log.ldf">
-      <DependentUpon>PeerToPeerDatabase.mdf</DependentUpon>
+    <Content Include="App_Data\PeerDatabase.mdf" />
+    <Content Include="App_Data\PeerDatabase_log.ldf">
+      <DependentUpon>PeerDatabase.mdf</DependentUpon>
     </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -204,8 +204,8 @@
     <Content Include="Global.asax" />
     <Content Include="Models\Client.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Client.Context.cs</LastGenOutput>
       <DependentUpon>Client.edmx</DependentUpon>
+      <LastGenOutput>Client.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Models\Client.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

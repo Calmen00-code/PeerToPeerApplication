@@ -13,10 +13,10 @@ namespace DatabaseServer.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class PeerToPeerDatabaseEntities : DbContext
+    public partial class PeerDatabaseEntities2 : DbContext
     {
-        public PeerToPeerDatabaseEntities()
-            : base("name=PeerToPeerDatabaseEntities")
+        public PeerDatabaseEntities2()
+            : base("name=PeerDatabaseEntities2")
         {
         }
     
