@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,25 @@ namespace Client
     /// </summary>
     public partial class UserWindow : Window
     {
-        public UserWindow()
+        private string ipAddress;
+
+        public UserWindow(string IPAddress)
         {
             InitializeComponent();
+            this.ipAddress = IPAddress;
+        }
+
+        private void PulishButton_Click(object sender, RoutedEventArgs e)
+        {
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            DirectoryInfo di = new DirectoryInfo(dir);
+            string fileName = "jobs_" + ipAddress + ".csv";
+            string path = di.Parent.FullName + @fileName;
+
+            using (StreamWriter sw = File.AppendText(path))
+            {
+                sw.WriteLine(PythonCodeTextBox.Text, "None");
+            }
         }
     }
 }

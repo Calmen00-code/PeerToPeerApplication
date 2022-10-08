@@ -8,7 +8,7 @@
         Title="UserWindow" Height="450" Width="800">
     <Grid>
         <TextBox Name="PythonCodeTextBox" HorizontalAlignment="Left" Margin="64,38,0,0" TextWrapping="Wrap" Text="Python code here" VerticalAlignment="Top" Width="424" Height="135"/>
-        <Button Name="PulishButton" Content="Publish" HorizontalAlignment="Left" Margin="612,76,0,0" VerticalAlignment="Top" Width="140" Height="60"/>
+        <Button Name="PulishButton" Content="Publish" HorizontalAlignment="Left" Margin="612,76,0,0" VerticalAlignment="Top" Width="140" Height="60" Click="PulishButton_Click"/>
         <Button Name="ChooseFromFileButton" Content="Choose From File" HorizontalAlignment="Left" Margin="612,236,0,0" VerticalAlignment="Top" Height="60" Width="140"/>
         <TextBlock Name="CurrentJobTextBoxLabel" HorizontalAlignment="Left" Margin="64,235,0,0" TextWrapping="Wrap" Text="Job in background: " VerticalAlignment="Top"/>
         <TextBlock Name="CurrentJobTextBoxValue" HorizontalAlignment="Left" Margin="190,235,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>

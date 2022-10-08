@@ -23,5 +23,11 @@ namespace Client
         {
             InitializeComponent();
         }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            UserWindow userWindow = new UserWindow(IpAddressTextBox.Text);
+            userWindow.Show();
+        }
     }
 }

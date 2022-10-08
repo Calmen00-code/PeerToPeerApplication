@@ -8,6 +8,6 @@
         Title="LoginWindow" Height="450" Width="800">
     <Grid>
         <TextBox Name="IpAddressTextBox" HorizontalAlignment="Center" Margin="0,115,0,0" TextWrapping="Wrap" Text="IP Address" VerticalAlignment="Top" Width="180" Height="45"/>
-        <Button Name="LoginButton" Content="Login" HorizontalAlignment="Center" Margin="0,251,0,0" VerticalAlignment="Top" Height="45" Width="104" RenderTransformOrigin="0.686,0.622"/>
+        <Button Name="LoginButton" Content="Login" HorizontalAlignment="Center" Margin="0,251,0,0" VerticalAlignment="Top" Height="45" Width="104" RenderTransformOrigin="0.686,0.622" Click="LoginButton_Click"/>
     </Grid>
 </Window>
