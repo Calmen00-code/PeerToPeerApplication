@@ -1,10 +1,14 @@
 ﻿using APIClasses;
 using Newtonsoft.Json;
 using RestSharp;
+using ServerThread;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,12 +28,38 @@ namespace Client
     public partial class UserWindow : Window
     {
         private static readonly string WEB_SERVER_API = "http://localhost:65119/";
+        private ServerThreadInterface channel;
         private string ipAddress;
 
         public UserWindow(string IPAddress)
         {
             InitializeComponent();
             this.ipAddress = IPAddress;
+
+            // Initialising Network Thread
+
+            // Initialising Server Thread
+            Process.Start(System.IO.Path.Combine(AppDomain.
+                CurrentDomain.BaseDirectory
+                .SolutionFolder(),
+                @"ServerThread\bin\Debug\ServerThread.exe"));
+        }
+
+        public void NetworkThread()
+        {
+            RestClient restClient = new RestClient(WEB_SERVER_API);
+            RestRequest restRequest = new RestRequest("api/clients", Method.Get);
+            RestResponse restResponse = restClient.Execute(restRequest);
+
+            if (restResponse.IsSuccessful)
+            {
+                List<ClientAPI> clients = JsonConvert.DeserializeObject<List<ClientAPI>>(restResponse.Content);
+                
+            }
+            else
+            {
+                MessageBox.Show("Error occured while getting clients");
+            }
         }
 
         private void PulishButton_Click(object sender, RoutedEventArgs e)
@@ -53,8 +83,9 @@ namespace Client
             {
                 // currentLine is treated as the job ID
                 // PythonCodeTextBox.Text is the python script which will be executed by other peer/node
-                // None is specified as newly created task is not allocated to any of the peer/node yet
-                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None");
+                // None for IP is specified as newly created task is not allocated to any of the peer/node yet
+                // None for Port is specified as newly created task is not allocated to any of the peer/node yet
+                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None,None");
             }
             MessageBox.Show("Job added to " + ipAddress);
         }

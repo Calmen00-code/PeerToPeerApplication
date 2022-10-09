@@ -18,9 +18,9 @@ namespace DatabaseServer.Controllers
         private PeerDatabaseEntities2 db = new PeerDatabaseEntities2();
 
         [Route("")]
-        public IQueryable<Client> GetClients()
+        public List<Client> GetClients()
         {
-            return db.Clients;
+            return db.Clients.ToList();
         }
 
         [Route("{id}")]

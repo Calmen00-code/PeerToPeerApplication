@@ -59,3 +59,6 @@ C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\obj\Deb
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\obj\Debug\Client.csproj.CopyComplete
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\APIClasses.dll
 C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\APIClasses.pdb
+C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\ServerThread.exe
+C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\ServerThread.pdb
+C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\Client\bin\Debug\ServerThread.exe.config

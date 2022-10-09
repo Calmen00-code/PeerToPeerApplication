@@ -8,8 +8,12 @@ using System.Threading.Tasks;
 namespace ServerThread
 {
     [ServiceContract]
-    internal interface ServerThreadInterface
+    public interface ServerThreadInterface
     {
-        
+        [OperationContract]
+        List<Job> AvailableJobs(string ipAddress);
+
+        [OperationContract]
+        List<Job> AllJobs(string ipAddress);
     }
 }
