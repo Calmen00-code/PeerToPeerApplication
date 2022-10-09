@@ -12,7 +12,7 @@ namespace ServerThread
         static void Main(string[] args)
         {
             // you should write IP here
-            Console.WriteLine("Server for peer: ");
+            Console.WriteLine("Server for peer: " + args[0]);
             ServiceHost host;
             NetTcpBinding tcp = new NetTcpBinding();
 

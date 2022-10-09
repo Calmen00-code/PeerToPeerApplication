@@ -39,10 +39,15 @@ namespace Client
             // Initialising Network Thread
 
             // Initialising Server Thread
-            Process.Start(System.IO.Path.Combine(AppDomain.
+            Process process = new Process();
+            string path = System.IO.Path.Combine(AppDomain.
                 CurrentDomain.BaseDirectory
                 .SolutionFolder(),
-                @"ServerThread\bin\Debug\ServerThread.exe"));
+                @"ServerThread\bin\Debug\ServerThread.exe");
+            process.StartInfo.FileName = path;
+            process.StartInfo.Arguments = ipAddress;
+            process.Start();
+            process.WaitForExit();
         }
 
         public void NetworkThread()
