@@ -11,16 +11,17 @@ namespace ServerThread
     {
         static void Main(string[] args)
         {
-            // you should write IP here
-            Console.WriteLine("Server for peer: " + args[0]);
+            Console.WriteLine("Peer Server IP: " + args[0]);
+            Console.WriteLine("Peer Server Port: " + args[1]);
             ServiceHost host;
             NetTcpBinding tcp = new NetTcpBinding();
 
             host = new ServiceHost(typeof(ServerThreadImplementation));
-            host.AddServiceEndpoint(typeof(ServerThreadInterface), tcp, "net.tcp://0.0.0.0:8100/ServerThread");
+            string address = "net.tcp://" + args[0] + ":" + args[1] + "/ServerThread";
+            host.AddServiceEndpoint(typeof(ServerThreadInterface), tcp, address);
 
             host.Open();
-            Console.WriteLine("System Online");
+            Console.WriteLine("\nSystem Online");
             Console.ReadLine();
             host.Close();
         }

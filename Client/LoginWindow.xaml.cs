@@ -54,7 +54,7 @@ namespace Client
 
                 if (updateResponse.IsSuccessful)
                 {
-                    UserWindow userWindow = new UserWindow(client.IP_Address);
+                    UserWindow userWindow = new UserWindow(client.IP_Address, client.Port);
                     userWindow.Show();
                 }
                 else

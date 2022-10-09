@@ -28,15 +28,15 @@ namespace Client
     public partial class UserWindow : Window
     {
         private static readonly string WEB_SERVER_API = "http://localhost:65119/";
+
         private ServerThreadInterface channel;
         private string ipAddress;
+        private string port;
 
-        public UserWindow(string IPAddress)
+        public UserWindow(string IPAddress, string port)
         {
             InitializeComponent();
             this.ipAddress = IPAddress;
-
-            // Initialising Network Thread
 
             // Initialising Server Thread
             Process process = new Process();
@@ -45,9 +45,11 @@ namespace Client
                 .SolutionFolder(),
                 @"ServerThread\bin\Debug\ServerThread.exe");
             process.StartInfo.FileName = path;
-            process.StartInfo.Arguments = ipAddress;
+            process.StartInfo.Arguments = ipAddress + " " + port;
             process.Start();
-            process.WaitForExit();
+
+            // Initialising Network Thread
+            NetworkThread();
         }
 
         public void NetworkThread()
@@ -59,7 +61,24 @@ namespace Client
             if (restResponse.IsSuccessful)
             {
                 List<ClientAPI> clients = JsonConvert.DeserializeObject<List<ClientAPI>>(restResponse.Content);
-                
+                foreach(ClientAPI client in clients)
+                {
+                    try
+                    {
+
+                        ChannelFactory<ServerThread.ServerThreadInterface> channelFactory;
+                        NetTcpBinding tcp = new NetTcpBinding();
+
+                        string URL = "net.tcp://" + client.IP_Address + ":" + client.Port + "/ServerThread";
+                        channelFactory = new ChannelFactory<ServerThread.ServerThreadInterface>(tcp, URL);
+                        channel = channelFactory.CreateChannel();
+                        System.Diagnostics.Debug.WriteLine("jobs: " + channel.NumOfJobs());
+                    }
+                    catch (EndpointNotFoundException) 
+                    {
+                        System.Diagnostics.Debug.WriteLine("Server " + client.IP_Address + " is inactive");
+                    }
+                }
             }
             else
             {

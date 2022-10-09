@@ -15,5 +15,8 @@ namespace ServerThread
 
         [OperationContract]
         List<Job> AllJobs(string ipAddress);
+
+        [OperationContract]
+        int NumOfJobs();
     }
 }

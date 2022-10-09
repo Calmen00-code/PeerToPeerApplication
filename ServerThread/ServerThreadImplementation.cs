@@ -42,5 +42,10 @@ namespace ServerThread
         {
             throw new NotImplementedException();
         }
+
+        int ServerThreadInterface.NumOfJobs()
+        {
+            return 10;
+        }
     }
 }
