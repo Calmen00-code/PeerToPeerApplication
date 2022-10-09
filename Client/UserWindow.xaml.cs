@@ -62,22 +62,28 @@ namespace Client
             if (restResponse.IsSuccessful)
             {
                 List<ClientAPI> clients = JsonConvert.DeserializeObject<List<ClientAPI>>(restResponse.Content);
+                List<Job> jobs;
                 foreach(ClientAPI client in clients)
                 {
-                    try
+                    if ( !client.IP_Address.Equals(ipAddress))
                     {
+                        try
+                        {
+                            ChannelFactory<ServerThread.ServerThreadInterface> channelFactory;
+                            NetTcpBinding tcp = new NetTcpBinding();
 
-                        ChannelFactory<ServerThread.ServerThreadInterface> channelFactory;
-                        NetTcpBinding tcp = new NetTcpBinding();
+                            string URL = "net.tcp://" + client.IP_Address + ":" + client.Port + "/ServerThread";
+                            channelFactory = new ChannelFactory<ServerThread.ServerThreadInterface>(tcp, URL);
+                            channel = channelFactory.CreateChannel();
+                            channel.AllJobs(client.IP_Address, out jobs);
+                            printAllJobs(client.IP_Address, jobs);
 
-                        string URL = "net.tcp://" + client.IP_Address + ":" + client.Port + "/ServerThread";
-                        channelFactory = new ChannelFactory<ServerThread.ServerThreadInterface>(tcp, URL);
-                        channel = channelFactory.CreateChannel();
-                        System.Diagnostics.Debug.WriteLine("jobs: " + channel.NumOfJobs());
-                    }
-                    catch (EndpointNotFoundException) 
-                    {
-                        System.Diagnostics.Debug.WriteLine("Server " + client.IP_Address + " is inactive");
+                            // System.Diagnostics.Debug.WriteLine("number of jobs for " + client.IP_Address + ": " + channel.NumOfJobs(client.IP_Address));
+                        }
+                        catch (EndpointNotFoundException) 
+                        {
+                            System.Diagnostics.Debug.WriteLine("Server " + client.IP_Address + " is inactive");
+                        }
                     }
                 }
             }
@@ -87,24 +93,38 @@ namespace Client
             }
         }
 
+        private void printAllJobs(string ipAddress, List<Job> jobs)
+        {
+            if (jobs != null)
+            {
+                System.Diagnostics.Debug.WriteLine("Jobs by: " + ipAddress);
+                foreach (Job job in jobs)
+                {
+                    System.Diagnostics.Debug.WriteLine(job.PythonCode + " , " + job.ClientIP + " , " + job.ClientPort);
+                }
+            }
+        }
+
         private void PulishButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             string dir = AppDomain.CurrentDomain.BaseDirectory;
             DirectoryInfo di = new DirectoryInfo(dir);
             string fileName = "jobs_" + ipAddress + ".csv";
             string path = di.Parent.FullName + @fileName;
+            */
 
             int currentLine;
             try
             {
-                currentLine = System.IO.File.ReadAllLines(path).Length;
+                currentLine = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv").Length;
             }
             catch (IOException)
             {
                 currentLine = 0;
             }
 
-            using (StreamWriter sw = File.AppendText(path))
+            using (StreamWriter sw = File.AppendText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
             {
                 // currentLine is treated as the job ID
                 // PythonCodeTextBox.Text is the python script which will be executed by other peer/node

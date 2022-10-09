@@ -11,12 +11,12 @@ namespace ServerThread
     public interface ServerThreadInterface
     {
         [OperationContract]
-        List<Job> AvailableJobs(string ipAddress);
+        void AvailableJobs(string ipAddress, out List<Job> outJobs);
 
         [OperationContract]
-        List<Job> AllJobs(string ipAddress);
+        void AllJobs(string ipAddress, out List<Job> outJobs);
 
         [OperationContract]
-        int NumOfJobs();
+        int NumOfJobs(string ipAddress);
     }
 }

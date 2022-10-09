@@ -10,13 +10,13 @@
         <TextBox Name="PythonCodeTextBox" HorizontalAlignment="Left" Margin="70,118,0,0" TextWrapping="Wrap" Text="Python code here" VerticalAlignment="Top" Width="424" Height="135"/>
         <Button Name="PulishButton" Content="Publish" HorizontalAlignment="Left" Margin="618,156,0,0" VerticalAlignment="Top" Width="140" Height="60" Click="PulishButton_Click"/>
         <Button Name="ChooseFromFileButton" Content="Choose From File" HorizontalAlignment="Left" Margin="618,316,0,0" VerticalAlignment="Top" Height="60" Width="140"/>
-        <TextBlock Name="CurrentJobTextBoxLabel" HorizontalAlignment="Left" Margin="70,315,0,0" TextWrapping="Wrap" Text="Job in background: " VerticalAlignment="Top"/>
-        <TextBlock Name="CurrentJobTextBoxValue" HorizontalAlignment="Left" Margin="196,315,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <TextBlock Name="NumberJobTextBoxLabel" HorizontalAlignment="Left" Margin="70,315,0,0" TextWrapping="Wrap" Text="Job completed: " VerticalAlignment="Top"/>
+        <TextBlock Name="NumberJobTextBoxValue" HorizontalAlignment="Left" Margin="196,315,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
         <TextBlock Name="CurrentJobStatusTextBoxLabel" HorizontalAlignment="Left" Margin="70,360,0,0" TextWrapping="Wrap" Text="Job in background: " VerticalAlignment="Top"/>
         <TextBlock Name="CurrentJobStatusTextBoxValue" HorizontalAlignment="Left" Margin="196,363,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="0"/>
         <Button Name="LogoutButton" Content="Logout" HorizontalAlignment="Left" Margin="652,21,0,0" VerticalAlignment="Top" Height="39" Width="72" Click="LogoutButton_Click"/>
-        <TextBlock Name="PeerTextBox" HorizontalAlignment="Left" Margin="70,22,0,0" TextWrapping="Wrap" Text="Peer: " VerticalAlignment="Top" Height="18" Width="52"/>
-        <TextBlock Name="PeerValueTextBox" HorizontalAlignment="Left" Margin="113,22,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="18" Width="71"/>
+        <TextBlock Name="PeerTextBox" HorizontalAlignment="Left" Margin="70,22,0,0" TextWrapping="Wrap" Text="Peer: " VerticalAlignment="Top" Height="18" Width="31"/>
+        <TextBlock Name="PeerValueTextBox" HorizontalAlignment="Left" Margin="116,22,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="18" Width="114"/>
 
     </Grid>
 </Window>
