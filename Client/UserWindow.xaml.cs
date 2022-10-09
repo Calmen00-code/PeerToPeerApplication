@@ -37,6 +37,7 @@ namespace Client
         {
             InitializeComponent();
             this.ipAddress = IPAddress;
+            PeerValueTextBox.Text = IPAddress;
 
             // Initialising Server Thread
             Process process = new Process();
