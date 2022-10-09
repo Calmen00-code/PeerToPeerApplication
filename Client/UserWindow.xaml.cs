@@ -32,7 +32,6 @@ namespace Client
 
         private ServerThreadInterface channel;
         private string ipAddress;
-        private string port;
 
         public UserWindow(string IPAddress, string port)
         {
@@ -89,7 +88,7 @@ namespace Client
                             string URL = "net.tcp://" + client.IP_Address + ":" + client.Port + "/ServerThread";
                             channelFactory = new ChannelFactory<ServerThread.ServerThreadInterface>(tcp, URL);
                             channel = channelFactory.CreateChannel();
-                            channel.AllJobs(client.IP_Address, out jobs);
+                            channel.AvailableJobs(client.IP_Address, out jobs);
                             printAllJobs(client.IP_Address, jobs);
                         }
                         catch (EndpointNotFoundException) 
@@ -109,7 +108,7 @@ namespace Client
         {
             if (jobs != null)
             {
-                System.Diagnostics.Debug.WriteLine("Jobs by: " + ipAddress);
+                System.Diagnostics.Debug.WriteLine("Available jobs for: " + ipAddress);
                 foreach (Job job in jobs)
                 {
                     System.Diagnostics.Debug.WriteLine(job.PythonCode + " , " + job.ClientIP + " , " + job.ClientPort);

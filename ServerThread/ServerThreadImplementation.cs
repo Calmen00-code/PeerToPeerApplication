@@ -49,9 +49,36 @@ namespace ServerThread
             }
         }
 
-        void ServerThreadInterface.AvailableJobs(string ipAddress, out List<Job> outJobs)
+        void ServerThreadInterface.AvailableJobs(string ipAddress, out List<Job> availableJobs)
         {
-            throw new NotImplementedException();
+            List<Job> jobs = new List<Job>();
+            try
+            {
+                using (var reader = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        string[] values = line.Split(',');
+                        if (values[2].Equals("None"))
+                        {
+                            Job job = new Job();
+                            job.JobID = values[0];
+                            job.PythonCode = values[1];
+                            job.ClientIP = values[2];
+                            job.ClientPort = values[3];
+
+                            jobs.Add(job);
+                        }
+                    }
+                }
+                availableJobs = jobs;
+            }
+            catch (IOException)
+            {
+                System.Diagnostics.Debug.WriteLine(ipAddress + " File not found");
+                availableJobs = null;
+            }
         }
 
         int ServerThreadInterface.NumOfJobs(string ipAddress)
