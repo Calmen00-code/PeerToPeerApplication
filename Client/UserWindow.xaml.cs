@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,10 +51,20 @@ namespace Client
             process.Start();
 
             // Initialising Network Thread
-            NetworkThread();
+            Thread networkThread = new Thread(NetworkThread);
+            networkThread.Start();
         }
 
         public void NetworkThread()
+        {
+            while (true)
+            {
+                NetworkJob();
+                Thread.Sleep(2000);
+            }
+        }
+
+        private void NetworkJob()
         {
             RestClient restClient = new RestClient(WEB_SERVER_API);
             RestRequest restRequest = new RestRequest("api/clients", Method.Get);
@@ -65,10 +76,13 @@ namespace Client
                 List<Job> jobs;
                 foreach(ClientAPI client in clients)
                 {
+                    // Current client cannot perform its own task, therefore skip it.
                     if ( !client.IP_Address.Equals(ipAddress))
                     {
+                        // Try connecting to the server, if server is offline, EndpointNotFoundException will be thrown
                         try
                         {
+                            // Connecting to the client server
                             ChannelFactory<ServerThread.ServerThreadInterface> channelFactory;
                             NetTcpBinding tcp = new NetTcpBinding();
 
@@ -77,8 +91,6 @@ namespace Client
                             channel = channelFactory.CreateChannel();
                             channel.AllJobs(client.IP_Address, out jobs);
                             printAllJobs(client.IP_Address, jobs);
-
-                            // System.Diagnostics.Debug.WriteLine("number of jobs for " + client.IP_Address + ": " + channel.NumOfJobs(client.IP_Address));
                         }
                         catch (EndpointNotFoundException) 
                         {
