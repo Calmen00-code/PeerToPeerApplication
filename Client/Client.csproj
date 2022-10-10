@@ -179,7 +179,7 @@
       <Name>APIClasses</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServerThread\ServerThread.csproj">
-      <Project>{315b2376-cc68-42d2-a21b-e049e1f9ad19}</Project>
+      <Project>{315B2376-CC68-42D2-A21B-E049E1F9AD19}</Project>
       <Name>ServerThread</Name>
     </ProjectReference>
   </ItemGroup>

@@ -31,12 +31,14 @@ namespace Client
         private static readonly string WEB_SERVER_API = "http://localhost:65119/";
 
         private ServerThreadInterface channel;
-        private string ipAddress;
+        private string currentIpAddress;
+        private string currentPort;
 
         public UserWindow(string IPAddress, string port)
         {
             InitializeComponent();
-            this.ipAddress = IPAddress;
+            this.currentIpAddress = IPAddress;
+            this.currentPort = port;
             PeerValueTextBox.Text = IPAddress;
 
             // Initialising Server Thread
@@ -46,7 +48,7 @@ namespace Client
                 .SolutionFolder(),
                 @"ServerThread\bin\Debug\ServerThread.exe");
             process.StartInfo.FileName = path;
-            process.StartInfo.Arguments = ipAddress + " " + port;
+            process.StartInfo.Arguments = currentIpAddress + " " + currentPort;
             process.Start();
 
             // Initialising Network Thread
@@ -58,25 +60,61 @@ namespace Client
         {
             while (true)
             {
-                NetworkJob();
-                Thread.Sleep(2000);
+                Job job;
+                ClientAPI clientAPI;
+                NetworkJob(out job, out clientAPI);
+
+                // Debug here
+                if (job == null) { System.Diagnostics.Debug.WriteLine("job is null"); }
+                if (clientAPI == null) { System.Diagnostics.Debug.WriteLine("client is null"); }
+                // Debug end here
+
+                if (job != null && clientAPI != null)
+                {
+                    // Connect to the client server and update the job status in the client's job file
+                    ChannelFactory<ServerThread.ServerThreadInterface> channelFactory;
+                    NetTcpBinding tcp = new NetTcpBinding();
+
+                    string URL = "net.tcp://" + clientAPI.IP_Address + ":" + clientAPI.Port + "/ServerThread";
+                    channelFactory = new ChannelFactory<ServerThread.ServerThreadInterface>(tcp, URL);
+                    channel = channelFactory.CreateChannel();
+
+                    /** 
+                     * Peer is essentially the same as ClientAPI, to avoid reference looping, that is why 
+                     * creating a peer here to avoid it. Otherwise, ServerThread will also need to reference 
+                     * which is not ideal here 
+                     */
+                    Peer peer = new Peer();
+                    peer.IP_Address = clientAPI.IP_Address;
+                    peer.Port = clientAPI.Port;
+                    System.Diagnostics.Debug.WriteLine("Peer: " + peer.IP_Address);
+                    // Set current login peer to perform peer's (client's) job
+                    channel.UpdateJob(job, peer, currentIpAddress, currentPort);
+
+                    // do the job
+                }
+                Thread.Sleep(10000);
             }
         }
 
-        private void NetworkJob()
+        // Query all the clients and look for any available job
+        // Otherwise, return null for both outJob and outClient if there is no available job at the moment
+        private void NetworkJob(out Job outJob, out ClientAPI outClient)
         {
             RestClient restClient = new RestClient(WEB_SERVER_API);
             RestRequest restRequest = new RestRequest("api/clients", Method.Get);
             RestResponse restResponse = restClient.Execute(restRequest);
+            Job retJob = null;
+            ClientAPI retClientAPI = null;
 
             if (restResponse.IsSuccessful)
             {
                 List<ClientAPI> clients = JsonConvert.DeserializeObject<List<ClientAPI>>(restResponse.Content);
                 List<Job> jobs;
-                foreach(ClientAPI client in clients)
+                foreach (ClientAPI client in clients)
                 {
-                    // Current client cannot perform its own task, therefore skip it.
-                    if ( !client.IP_Address.Equals(ipAddress))
+                    // Current client cannot perform its own task, therefore we skip it.
+                    if ( !client.IP_Address.Equals(currentIpAddress))
                     {
                         // Try connecting to the server, if server is offline, EndpointNotFoundException will be thrown
                         try
@@ -90,6 +128,14 @@ namespace Client
                             channel = channelFactory.CreateChannel();
                             channel.AvailableJobs(client.IP_Address, out jobs);
                             printAllJobs(client.IP_Address, jobs);
+
+                            // if there is an available jobs, allocate it to the current peer
+                            if (jobs != null && jobs.Count > 0)
+                            {
+                                retJob = jobs[0];
+                                retClientAPI = client;
+                                break;
+                            }
                         }
                         catch (EndpointNotFoundException) 
                         {
@@ -102,6 +148,15 @@ namespace Client
             {
                 MessageBox.Show("Error occured while getting clients");
             }
+            outJob = retJob;
+            outClient = retClientAPI;
+
+            // Debug here
+            if (outClient != null)
+            {
+                System.Diagnostics.Debug.WriteLine("outClient: " + outClient.IP_Address);
+            }
+            // Debug ends here
         }
 
         private void printAllJobs(string ipAddress, List<Job> jobs)
@@ -128,14 +183,14 @@ namespace Client
             int currentLine;
             try
             {
-                currentLine = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv").Length;
+                currentLine = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv").Length;
             }
             catch (IOException)
             {
                 currentLine = 0;
             }
 
-            using (StreamWriter sw = File.AppendText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
+            using (StreamWriter sw = File.AppendText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv"))
             {
                 // currentLine is treated as the job ID
                 // PythonCodeTextBox.Text is the python script which will be executed by other peer/node
@@ -143,7 +198,7 @@ namespace Client
                 // None for Port is specified as newly created task is not allocated to any of the peer/node yet
                 sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None,None");
             }
-            MessageBox.Show("Job added to " + ipAddress);
+            MessageBox.Show("Job added to " + currentIpAddress);
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
@@ -151,7 +206,7 @@ namespace Client
             RestClient restClient = new RestClient(WEB_SERVER_API);
 
             RestRequest getRequest = new RestRequest("api/clients/{id}/", Method.Get);
-            getRequest.AddUrlSegment("id", ipAddress);
+            getRequest.AddUrlSegment("id", currentIpAddress);
             RestResponse getResponse = restClient.Execute(getRequest);
 
             if (getResponse.IsSuccessful)
@@ -159,7 +214,7 @@ namespace Client
                 ClientAPI client = JsonConvert.DeserializeObject<ClientAPI>(getResponse.Content);
 
                 RestRequest updateRequest = new RestRequest("api/clients/update/{id}/", Method.Put);
-                updateRequest.AddUrlSegment("id", ipAddress);
+                updateRequest.AddUrlSegment("id", currentIpAddress);
 
                 ClientAPI updateClient = new ClientAPI();
                 updateClient.IP_Address = client.IP_Address;

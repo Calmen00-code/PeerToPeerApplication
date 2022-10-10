@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-// This class is created to allow opening server thread upon peer login
+// This class is created to startup peer's server thread upon peer login
 namespace Client
 {
     public static class Extensions

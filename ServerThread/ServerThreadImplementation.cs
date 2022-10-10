@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,6 +100,30 @@ namespace ServerThread
                 System.Diagnostics.Debug.WriteLine(ipAddress + " File not found");
                 return 0;
             }
+        }
+
+        // Adding the IP address and the Port number of the peer that is currently working on the job
+        // so that the job will not be allocated by other peer
+        void ServerThreadInterface.UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort)
+        {
+            string text = File.ReadAllText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv");
+            using (StreamReader sr = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv"))
+            {
+                String line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] parts = line.Split(',');
+
+                    if (parts[0].Equals(job.JobID))
+                    {
+                        text = text.Replace(parts[2], performerIPAddress);
+                        text = text.Replace(parts[3], performerPort);
+                        System.Diagnostics.Debug.WriteLine("text replacement: " + text);
+                    }
+                }
+            }
+
+            File.WriteAllText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", text);
         }
     }
 }
