@@ -20,6 +20,6 @@ namespace ServerThread
         int NumOfJobs(string ipAddress);
 
         [OperationContract]
-        void UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort);
+        void UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort, string result);
     }
 }

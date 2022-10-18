@@ -21,6 +21,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
+
 namespace Client
 {
     /// <summary>
@@ -87,13 +90,39 @@ namespace Client
                     Peer peer = new Peer();
                     peer.IP_Address = clientAPI.IP_Address;
                     peer.Port = clientAPI.Port;
-                    System.Diagnostics.Debug.WriteLine("Peer: " + peer.IP_Address);
+                    System.Diagnostics.Debug.WriteLine("Peer IP: " + peer.IP_Address);
+                    System.Diagnostics.Debug.WriteLine("Peer Port: " + peer.Port);
                     // Set current login peer to perform peer's (client's) job
-                    channel.UpdateJob(job, peer, currentIpAddress, currentPort);
+                    channel.UpdateJob(job, peer, currentIpAddress, currentPort, "");
 
-                    // do the job
+                    // do the job and update the result
+                    string result = ExecuteJob(job);
+                    channel.UpdateJob(job, peer, currentIpAddress, currentPort, result);
                 }
                 Thread.Sleep(10000);
+            }
+        }
+
+        private string ExecuteJob(Job job)
+        {
+            ScriptEngine engine = Python.CreateEngine();
+            ScriptScope scope = engine.CreateScope();
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.Position = 0;
+                engine.Runtime.IO.SetOutput(stream, Encoding.Default);
+                string result = "";
+                try
+                {
+                    engine.Execute(job.PythonCode, scope);
+                    result = Encoding.Default.GetString(stream.ToArray());
+                }
+                catch (Exception e)
+                {  
+                    result = e.GetType().Name + ": " + e.Message;
+                }
+                return result;
             }
         }
 
@@ -196,7 +225,8 @@ namespace Client
                 // PythonCodeTextBox.Text is the python script which will be executed by other peer/node
                 // None for IP is specified as newly created task is not allocated to any of the peer/node yet
                 // None for Port is specified as newly created task is not allocated to any of the peer/node yet
-                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None,None");
+                // None for result column as it has not been executed yet
+                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None,None,None");
             }
             MessageBox.Show("Job added to " + currentIpAddress);
         }

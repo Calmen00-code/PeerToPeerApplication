@@ -104,26 +104,18 @@ namespace ServerThread
 
         // Adding the IP address and the Port number of the peer that is currently working on the job
         // so that the job will not be allocated by other peer
-        void ServerThreadInterface.UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort)
+        void ServerThreadInterface.UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort, string result)
         {
-            string text = File.ReadAllText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv");
-            using (StreamReader sr = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv"))
+            string[] texts = File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv");
+            for (int i = 0; i < texts.Length; i++)
             {
-                String line;
-                while ((line = sr.ReadLine()) != null)
+                string[] text = texts[i].Split(',');
+                if (text[0].Equals(job.JobID))
                 {
-                    string[] parts = line.Split(',');
-
-                    if (parts[0].Equals(job.JobID))
-                    {
-                        text = text.Replace(parts[2], performerIPAddress);
-                        text = text.Replace(parts[3], performerPort);
-                        System.Diagnostics.Debug.WriteLine("text replacement: " + text);
-                    }
+                    texts[i] = job.JobID + "," + job.PythonCode + "," + performerIPAddress + "," + performerPort + "," + result;
                 }
             }
-
-            File.WriteAllText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", text);
+            File.WriteAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", texts);
         }
     }
 }
