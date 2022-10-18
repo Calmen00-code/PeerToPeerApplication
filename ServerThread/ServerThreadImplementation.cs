@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,10 +113,46 @@ namespace ServerThread
                 string[] text = texts[i].Split(',');
                 if (text[0].Equals(job.JobID))
                 {
-                    texts[i] = job.JobID + "," + job.PythonCode + "," + performerIPAddress + "," + performerPort + "," + result;
+                    if (job.PythonCode.Contains("\r\n"))
+                    {
+                        System.Diagnostics.Debug.WriteLine("Into NEWLINE");
+                        texts[i] = job.JobID + ",\"" + job.PythonCode + "\"," + performerIPAddress + "," + performerPort + ",\"" + result + "\"";
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Not Into NEWLINE");
+                        texts[i] = job.JobID + "," + job.PythonCode + "," + performerIPAddress + "," + performerPort + "," + result;
+                    }
                 }
             }
-            File.WriteAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", texts);
+            WriteAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", texts);
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        void Log_Print(string logString)
+        {
+            Console.WriteLine(logString);
+        }
+
+        void WriteAllLines(string path, string[] lines)
+        {
+            if (path == null)
+                throw new ArgumentNullException("path");
+            if (lines == null)
+                throw new ArgumentNullException("lines");
+
+            using (var stream = File.OpenWrite(path))
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length - 1; i++)
+                    {
+                        writer.WriteLine(lines[i]);
+                    }
+                    writer.Write(lines[lines.Length - 1]);
+                }
+            }
         }
     }
 }
