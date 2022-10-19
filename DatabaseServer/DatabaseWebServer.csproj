@@ -175,7 +175,7 @@
       <DependentUpon>Client.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs">
-      <DependentUpon>Client.tt</DependentUpon>
+      <DependentUpon>ClientPeer.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -186,6 +186,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Client.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClientPeer.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ClientPeer.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClientPeer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ClientPeer.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClientPeer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ClientPeer.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -211,6 +226,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Client.edmx</DependentUpon>
       <LastGenOutput>Client1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\ClientPeer.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ClientPeer.edmx</DependentUpon>
+      <LastGenOutput>ClientPeer.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\ClientPeer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ClientPeer.edmx</DependentUpon>
+      <LastGenOutput>ClientPeer.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -239,6 +264,13 @@
     </EntityDeploy>
     <Content Include="Models\Client.edmx.diagram">
       <DependentUpon>Client.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\ClientPeer.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ClientPeer.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ClientPeer.edmx.diagram">
+      <DependentUpon>ClientPeer.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

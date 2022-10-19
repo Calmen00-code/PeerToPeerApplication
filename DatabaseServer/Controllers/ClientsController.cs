@@ -13,9 +13,9 @@ using DatabaseServer.Models;
 namespace DatabaseServer.Controllers
 {
     [RoutePrefix("api/clients")]
-    public class Clients1Controller : ApiController
+    public class ClientsController : ApiController
     {
-        private PeerDatabaseEntities2 db = new PeerDatabaseEntities2();
+        private PeerDatabaseEntities3 db = new PeerDatabaseEntities3();
 
         [Route("")]
         public List<Client> GetClients()

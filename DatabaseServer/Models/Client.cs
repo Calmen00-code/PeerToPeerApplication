@@ -17,5 +17,6 @@ namespace DatabaseServer.Models
         public string IP_Address { get; set; }
         public string Port { get; set; }
         public Nullable<bool> Idle { get; set; }
+        public int CompletedJob { get; set; }
     }
 }

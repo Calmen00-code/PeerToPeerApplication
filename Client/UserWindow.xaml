@@ -13,7 +13,7 @@
         <TextBlock Name="NumberJobTextBoxLabel" HorizontalAlignment="Left" Margin="70,315,0,0" TextWrapping="Wrap" Text="Job completed: " VerticalAlignment="Top"/>
         <TextBlock Name="NumberJobTextBoxValue" HorizontalAlignment="Left" Margin="196,315,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
         <TextBlock Name="CurrentJobStatusTextBoxLabel" HorizontalAlignment="Left" Margin="70,360,0,0" TextWrapping="Wrap" Text="Job in background: " VerticalAlignment="Top"/>
-        <TextBlock Name="CurrentJobStatusTextBoxValue" HorizontalAlignment="Left" Margin="196,363,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="0"/>
+        <TextBlock Name="CurrentJobStatusTextBoxValue" HorizontalAlignment="Left" Margin="185,360,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
         <Button Name="LogoutButton" Content="Logout" HorizontalAlignment="Left" Margin="652,21,0,0" VerticalAlignment="Top" Height="39" Width="72" Click="LogoutButton_Click"/>
         <TextBlock Name="PeerTextBox" HorizontalAlignment="Left" Margin="70,22,0,0" TextWrapping="Wrap" Text="Peer: " VerticalAlignment="Top" Height="18" Width="31"/>
         <TextBlock Name="PeerValueTextBox" HorizontalAlignment="Left" Margin="116,22,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="18" Width="114"/>

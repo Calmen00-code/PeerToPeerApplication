@@ -98,13 +98,65 @@ namespace Client
                     // do the job and update the result
                     string result = ExecuteJob(job);
                     channel.UpdateJob(job, peer, currentIpAddress, currentPort, result);
+                    updateCompletedJob();
                 }
                 Thread.Sleep(10000);
             }
         }
 
+        private void updateCompletedJob()
+        {
+            RestClient restClient = new RestClient(WEB_SERVER_API);
+
+            RestRequest getRequest = new RestRequest("api/clients/{id}/", Method.Get);
+            getRequest.AddUrlSegment("id", currentIpAddress);
+            RestResponse getResponse = restClient.Execute(getRequest);
+
+            if (getResponse.IsSuccessful)
+            {
+                ClientAPI client = JsonConvert.DeserializeObject<ClientAPI>(getResponse.Content);
+
+                RestRequest updateRequest = new RestRequest("api/clients/update/{id}/", Method.Put);
+                updateRequest.AddUrlSegment("id", currentIpAddress);
+
+                ClientAPI clientAPI = new ClientAPI();
+                clientAPI.IP_Address = client.IP_Address;
+                clientAPI.Port = client.Port;
+                clientAPI.Idle = client.Idle;
+                clientAPI.CompletedJob = client.CompletedJob + 1;
+
+                updateRequest.AddJsonBody(clientAPI);
+
+                RestResponse updateResponse = restClient.Execute(updateRequest);
+
+                if (updateResponse.IsSuccessful)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        NumberJobTextBoxValue.Text = clientAPI.CompletedJob.ToString();
+                        System.Diagnostics.Debug.WriteLine("Completed Job increase: " + clientAPI.CompletedJob.ToString());
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Error while updating the client completed job number");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error while finding IP address given");
+            }
+
+        }
+
         private string ExecuteJob(Job job)
         {
+            this.Dispatcher.Invoke(() =>
+            {
+                byte[] encodedBytes = Convert.FromBase64String(job.PythonCode);
+                CurrentJobStatusTextBoxValue.Text = Encoding.UTF8.GetString(encodedBytes);
+            });
+
             ScriptEngine engine = Python.CreateEngine();
             ScriptScope scope = engine.CreateScope();
 
@@ -115,15 +167,20 @@ namespace Client
                 string result = "";
                 try
                 {
-                    engine.Execute(job.PythonCode, scope);
+                    byte[] encodedBytes = Convert.FromBase64String(job.PythonCode);
+                    string code = Encoding.UTF8.GetString(encodedBytes);
+
+                    engine.Execute(code, scope);
                     result = Encoding.Default.GetString(stream.ToArray());
                 }
                 catch (Exception e)
-                {  
+                {
                     result = e.GetType().Name + ": " + e.Message;
                 }
+
                 return result;
             }
+
         }
 
         // Query all the clients and look for any available job
@@ -143,7 +200,7 @@ namespace Client
                 foreach (ClientAPI client in clients)
                 {
                     // Current client cannot perform its own task, therefore we skip it.
-                    if ( !client.IP_Address.Equals(currentIpAddress))
+                    if (!client.IP_Address.Equals(currentIpAddress))
                     {
                         // Try connecting to the server, if server is offline, EndpointNotFoundException will be thrown
                         try
@@ -166,7 +223,7 @@ namespace Client
                                 break;
                             }
                         }
-                        catch (EndpointNotFoundException) 
+                        catch (EndpointNotFoundException)
                         {
                             System.Diagnostics.Debug.WriteLine("Server " + client.IP_Address + " is inactive");
                         }
@@ -195,7 +252,9 @@ namespace Client
                 System.Diagnostics.Debug.WriteLine("Available jobs for: " + ipAddress);
                 foreach (Job job in jobs)
                 {
-                    System.Diagnostics.Debug.WriteLine(job.PythonCode + " , " + job.ClientIP + " , " + job.ClientPort);
+                    byte[] encodedBytes = Convert.FromBase64String(job.PythonCode);
+                    string code = Encoding.UTF8.GetString(encodedBytes);
+                    System.Diagnostics.Debug.WriteLine(code + " , " + job.ClientIP + " , " + job.ClientPort);
                 }
             }
         }
@@ -212,21 +271,25 @@ namespace Client
             int currentLine;
             try
             {
-                currentLine = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv").Length;
+                currentLine = System.IO.File.ReadAllLines(@"D:\.NET\Distributed Computing\PartB\PeerToPeerApplication\job_" + this.currentIpAddress + ".csv").Length;
+
+                // currentLine = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv").Length;
             }
             catch (IOException)
             {
+                System.Diagnostics.Debug.WriteLine("enter");
                 currentLine = 0;
             }
 
-            using (StreamWriter sw = File.AppendText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv"))
+            using (StreamWriter sw = File.AppendText(@"D:\.NET\Distributed Computing\PartB\PeerToPeerApplication\job_" + currentIpAddress + ".csv"))
+            //            using (StreamWriter sw = File.AppendText(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + currentIpAddress + ".csv"))
             {
                 // currentLine is treated as the job ID
                 // PythonCodeTextBox.Text is the python script which will be executed by other peer/node
                 // None for IP is specified as newly created task is not allocated to any of the peer/node yet
                 // None for Port is specified as newly created task is not allocated to any of the peer/node yet
                 // None for result column as it has not been executed yet
-                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text +  ",None,None,None");
+                sw.WriteLine(currentLine + "," + PythonCodeTextBox.Text + ",None,None,None");
             }
             MessageBox.Show("Job added to " + currentIpAddress);
         }
@@ -250,6 +313,7 @@ namespace Client
                 updateClient.IP_Address = client.IP_Address;
                 updateClient.Port = client.Port;
                 updateClient.Idle = false;
+                updateClient.CompletedJob = 0;
 
                 updateRequest.AddJsonBody(updateClient);
 

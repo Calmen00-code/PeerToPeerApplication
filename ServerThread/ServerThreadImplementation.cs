@@ -17,17 +17,18 @@ namespace ServerThread
     {
         void ServerThreadInterface.AllJobs(string ipAddress, out List<Job> outJobs)
         {
-            /*
+
             string dir = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString();
-            string fileName = "binjobs_" + ipAddress + ".csv";
+            string fileName = "job_" + ipAddress + ".csv";
             string path = Directory.GetParent(dir) + @"\" + fileName;
-            */
+
 
             List<Job> jobs = new List<Job>();
             try
             {
+                using (var reader = new StreamReader(path))
 
-                using (var reader = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
+                // using (var reader = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -35,7 +36,9 @@ namespace ServerThread
                         string[] values = line.Split(',');
                         Job job = new Job();
                         job.JobID = values[0];
-                        job.PythonCode = values[1];
+                        byte[] textBytes = Encoding.UTF8.GetBytes(values[1]);
+                        job.PythonCode = Convert.ToBase64String(textBytes);
+                        //                        job.PythonCode = values[1];
                         job.ClientIP = values[2];
                         job.ClientPort = values[3];
 
@@ -53,10 +56,16 @@ namespace ServerThread
 
         void ServerThreadInterface.AvailableJobs(string ipAddress, out List<Job> availableJobs)
         {
+            string dir = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString();
+            string fileName = "job_" + ipAddress + ".csv";
+            string path = Directory.GetParent(dir) + @"\" + fileName;
+
             List<Job> jobs = new List<Job>();
             try
             {
-                using (var reader = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
+                using (var reader = new StreamReader(path))
+
+                //                using (var reader = new StreamReader(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv"))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -66,7 +75,9 @@ namespace ServerThread
                         {
                             Job job = new Job();
                             job.JobID = values[0];
-                            job.PythonCode = values[1];
+                            byte[] textBytes = Encoding.UTF8.GetBytes(values[1]);
+                            job.PythonCode = Convert.ToBase64String(textBytes);
+                            //job.PythonCode = values[1];
                             job.ClientIP = values[2];
                             job.ClientPort = values[3];
 
@@ -93,7 +104,14 @@ namespace ServerThread
                 string fileName = "binjobs_" + ipAddress + ".csv";
                 string path = di.Parent.FullName + @fileName;
                 */
-                int num = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv").Length;
+
+                string dir = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString();
+                string fileName = "job_" + ipAddress + ".csv";
+                string path = Directory.GetParent(dir) + @"\" + fileName;
+
+                int num = System.IO.File.ReadAllLines(path).Length;
+
+                //int num = System.IO.File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + ipAddress + ".csv").Length;
                 return num;
             }
             catch (IOException)
@@ -107,25 +125,34 @@ namespace ServerThread
         // so that the job will not be allocated by other peer
         void ServerThreadInterface.UpdateJob(Job job, Peer peer, string performerIPAddress, string performerPort, string result)
         {
-            string[] texts = File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv");
+            string dir = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString();
+            string fileName = "job_" + peer.IP_Address + ".csv";
+            string path = Directory.GetParent(dir) + @"\" + fileName;
+
+            string[] texts = File.ReadAllLines(path);
+
+            //string[] texts = File.ReadAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv");
             for (int i = 0; i < texts.Length; i++)
             {
                 string[] text = texts[i].Split(',');
                 if (text[0].Equals(job.JobID))
                 {
-                    if (job.PythonCode.Contains("\r\n"))
+                    byte[] encodedBytes = Convert.FromBase64String(job.PythonCode);
+                    string code = Encoding.UTF8.GetString(encodedBytes);
+                    if (code.Contains("\r\n"))
                     {
                         System.Diagnostics.Debug.WriteLine("Into NEWLINE");
-                        texts[i] = job.JobID + ",\"" + job.PythonCode + "\"," + performerIPAddress + "," + performerPort + ",\"" + result + "\"";
+                        texts[i] = job.JobID + ",\"" + code + "\"," + performerIPAddress + "," + performerPort + ",\"" + result + "\"";
                     }
                     else
                     {
                         System.Diagnostics.Debug.WriteLine("Not Into NEWLINE");
-                        texts[i] = job.JobID + "," + job.PythonCode + "," + performerIPAddress + "," + performerPort + "," + result;
+                        texts[i] = job.JobID + "," + code + "," + performerIPAddress + "," + performerPort + "," + result;
                     }
                 }
             }
-            WriteAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", texts);
+            WriteAllLines(path, texts);
+            // WriteAllLines(@"C:\Users\calme\OneDrive\Desktop\Assignment2\PeerToPeerApplication\job_" + peer.IP_Address + ".csv", texts);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

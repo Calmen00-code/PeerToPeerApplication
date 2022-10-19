@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeerDatabase", "PeerDatabas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIClasses", "APIClasses\APIClasses.csproj", "{DFC4ADFA-2C8C-4B79-85D5-087859A8D830}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientWeb", "ClientWeb\ClientWeb.csproj", "{F50CF482-C2BB-4EF3-9B77-6A273559B347}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{DFC4ADFA-2C8C-4B79-85D5-087859A8D830}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFC4ADFA-2C8C-4B79-85D5-087859A8D830}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFC4ADFA-2C8C-4B79-85D5-087859A8D830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50CF482-C2BB-4EF3-9B77-6A273559B347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50CF482-C2BB-4EF3-9B77-6A273559B347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50CF482-C2BB-4EF3-9B77-6A273559B347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50CF482-C2BB-4EF3-9B77-6A273559B347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
